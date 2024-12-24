@@ -1,0 +1,21 @@
+﻿@model IEnumerable<TbBlog>
+
+@foreach (var item in Model)
+{
+    string sUrl = $"/blog/{item.Alias}-{item.BlogId}.html";
+    <div class="col-lg-4 col-md-4 col-sm-6">
+        <div class="blog__item">
+            <div class="blog__item__pic">
+                <img src="@item.Image" alt="">
+            </div>
+            <div class="blog__item__text">
+                <ul>
+                    <li><i class="fa fa-calendar-o"></i>@item.CreatedDate.Value.ToString("dd/MM/yyyy")</li>
+                    <li><i class="fa fa-comment-o"></i>Bài viết hay nhất</li>
+                </ul>
+                <h5><a href="@sUrl">@item.Title</a></h5>
+                <p>@item.Description </p>
+            </div>
+        </div>
+    </div>
+}

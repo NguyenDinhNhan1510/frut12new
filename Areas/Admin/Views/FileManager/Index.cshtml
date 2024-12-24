@@ -1,0 +1,65 @@
+﻿﻿@{
+    ViewBag.Title = "File Manager";
+}
+
+<div id="elfinder"></div>
+
+@section Scripts {
+    <!-- CSS -->
+    <link rel="stylesheet" href="~/admin/lib/jqueryui/themes/themes/base/theme.css" />
+    <link rel="stylesheet" href="~/admin/lib/jqueryui/themes/jquery-ui.css" />
+    <link rel="stylesheet" href="~/admin/lib/elfinder/css/elfinder.full.css" />
+    <link rel="stylesheet" href="~/admin/elfinder-material-theme/Material/css/theme-light.min.css" />
+
+    <!-- JS -->
+    <script src="~/admin/lib/jqueryui/jquery-ui.min.js"></script>
+    <script src="~/admin/lib/elfinder/js/elfinder.min.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            // Lấy danh sách các lệnh có sẵn của elFinder
+            var myCommands = elFinder.prototype._options.commands;
+
+            // Các lệnh chưa được triển khai trong elFinder.NetCore
+            var disabled = ['callback', 'chmod', 'editor', 'netmount', 'ping', 'search', 'zipdl', 'help'];
+
+            // Cập nhật thông điệp ngôn ngữ
+            elFinder.prototype.i18.en.messages.TextArea = "Edit";
+
+            // Tắt các lệnh chưa hỗ trợ
+            $.each(disabled, function (i, cmd) {
+                var idx = $.inArray(cmd, myCommands);
+                if (idx !== -1) myCommands.splice(idx, 1);
+            });
+
+            // Cấu hình elFinder
+            var options = {
+                baseUrl: "/Admin/lib/elfinder/",  // Thư mục chứa các tệp của elFinder
+                url: "/Admin/el-finder-file-system/connector",  // URL của connector
+                rememberLastDir: false,  // Không nhớ thư mục cuối
+                commands: myCommands,  // Các lệnh đã được bật
+                lang: 'vi',  // Ngôn ngữ
+                uiOptions: {
+                    toolbar: [
+                        ['back', 'forward'],
+                        ['reload'],
+                        ['home', 'up'],
+                        ['mkdir', 'mkfile', 'upload'],
+                        ['open', 'download'],
+                        ['undo', 'redo'],
+                        ['info'],
+                        ['quicklook'],
+                        ['copy', 'cut', 'paste'],
+                        ['rm'],
+                        ['duplicate', 'rename', 'edit'],
+                        ['selectall', 'selectnone', 'selectinvert'],
+                        ['view', 'sort']
+                    ]
+                }
+            };
+
+            // Khởi tạo elFinder
+            $('#elfinder').elfinder(options).elfinder('instance');
+        });
+    </script>
+}

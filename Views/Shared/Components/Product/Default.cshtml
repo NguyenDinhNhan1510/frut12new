@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Fruit_N12.Models.TbProduct>
+@foreach (var item in Model.Take(8))
+{
+    string sUrl = $"/product/{item.Alias}-{item.ProductId}.html";
+     <a href="@sUrl">
+    <div class="col-lg-3 col-md-4 col-sm-6 mix oranges fresh-meat">
+       
+        <div class="featured__item">
+           
+            <div class="featured__item__pic set-bg" data-setbg="@item.Image">
+                <ul class="featured__item__pic__hover">
+                    <li><a href="#"><i class="fa fa-heart"></i></a></li>
+                    <li><a href="#"><i class="fa fa-retweet"></i></a></li>
+                    <li><a asp-action="Add" asp-controller="Cart" asp-route-Id="@item.ProductId"><i class="fa fa-shopping-cart"></i></a></li>
+                </ul>
+            </div>
+         
+            <div class="featured__item__text">
+                <h6><a href="@sUrl">@item.Title</a></h6>
+                <h6>
+                        @if (item.PriceSale == 0)
+                        {
+                            <span class="new-price text-danger">@item.Price vnd</span>
+
+                        }
+                        else
+                        {
+                            <span class="new-price text-danger">@item.PriceSale vnd</span>
+                            <span class="old-price text-primary">(Giá gốc  @item.Price) </span>
+                        }
+                
+                </h6>
+            </div>
+        </div>
+        
+    </div>
+    </a>
+}
+
+
+
