@@ -1,6 +1,8 @@
 ﻿
 @using Fruit_N12.Models.ViewModels;
-@model CartItemViewModel
+@model CartItemViewModel;
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
 <section class="breadcrumb-section set-bg" data-setbg="img/breadcrumb.jpg">
     <div class="container">
@@ -20,6 +22,7 @@
 <!-- Breadcrumb Section End -->
 <!-- Shoping Cart Section Begin -->
 <section class="shoping-cart spad">
+    <form asp-controller="Cart" asp-action="CartChange" method="post">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
@@ -36,35 +39,61 @@
                         </thead>
                         <tbody>
 
-                            @if (Model?.CartItems != null && Model.CartItems.Count > 0)
+                            <script>
+                                'use strict';
+                                $(document).ready(function () {
+                                    var proQty = $('.pro-qty');
+                                    proQty.prepend('<span class="dec qtybtn">-</span>');
+                                    proQty.append('<span class="inc qtybtn">+</span>');
+                                    proQty.on('click', '.qtybtn', function () {
+                                        var $button = $(this);
+                                        var oldValue = $button.parent().find('input').val();
+                                        if ($button.hasClass('inc')) {
+                                            var newVal = parseFloat(oldValue) + 1;
+                                        } else {
+                                            // Don't allow decrementing below zero
+                                            if (oldValue > 0) {
+                                                var newVal = parseFloat(oldValue) - 1;
+                                            } else {
+                                                newVal = 0;
+                                            }
+                                        }
+                                        $button.parent().find('input').val(newVal);
+                                    });
+                                });
+                            </script>
+                            
+                            @if (Model?.CartItems != null)
                             {
-                                @foreach(var item in Model.CartItems)
+                                    @foreach (var item in Model.CartItems.Select((value, i) => new { i, value }))
                                 {
                                     <tr>
                                         <td class="shoping__cart__item">
-                                            <img src="@item.Image" alt="">
-                                            <h5>@item.Title</h5>
+                                                <img src="@item.value.Image" alt="">
+                                                <h5>@item.value.Title</h5>
                                         </td>
                                         <td class="shoping__cart__price">
-                                          @item.Price
+                                                @item.value.Price
                                         </td>
                                         <td class="shoping__cart__quantity">
                                             <div class="quantity">
                                                 <div class="pro-qty">
-                                                    <input type="text" value="@item.Quantity">
+
+                                                        <input asp-for="CartItems[@item.i].Quantity" type="text" value="@item.value.Quantity" name="CartItems[@item.i].Quantity">
+                                                    
                                                 </div>
                                             </div>
                                         </td>
                                         <td class="shoping__cart__total">
-                                           @Model.CartItems.Where(X => X.ProductId == @item.ProductId).Sum(x => x.Quantity*x.Price).ToString();
+                                                @((item.value.Quantity * item.value.Price).ToString("C"))
                                         </td>
                                         <td class="shoping__cart__item__close">
-                                            <span class="icon_close"></span>
+                                                <a href="~/Cart/Delete/@item.value.ProductId"><span class="icon_close"></span></a>
                                         </td>
                                     </tr>
                                 }
-                             
-                               }
+                                    
+                             }
                             else {
                                 <h4>Yout cart is Empty</h4>
                             }
@@ -77,12 +106,20 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="shoping__cart__btns">
-                    <a href="#" class="primary-btn cart-btn">CONTINUE SHOPPING</a>
-                    <a href="#" class="primary-btn cart-btn cart-btn-right">
-                        <span class="icon_loading"></span>
-                        Upadate Cart
-                    </a>
+                    <a href="~/Home/Index" class="primary-btn cart-btn">CONTINUE SHOPPING </a>
+
+
+                        <button>
+                            <a class="primary-btn cart-btn cart-btn-right">
+                            
+                                <span class="icon_loading"></span>
+                                Upadate Cart
+                            
+                            </a>
+                        </button>
+
                 </div>
+                
             </div>
             <div class="col-lg-6">
                 <div class="shoping__continue">
@@ -99,13 +136,15 @@
                 <div class="shoping__checkout">
                     <h5>Cart Total</h5>
                     <ul>
-                        <li>Subtotal <span>$454.98</span></li>
-                        <li>Total <span>$454.98</span></li>
+                        <li>Subtotal <span>@Model.GrandTotal</span></li>
+                        <li>Total <span>@Model.GrandTotal</span></li>
                     </ul>
                     <a href="#" class="primary-btn">PROCEED TO CHECKOUT</a>
                 </div>
             </div>
         </div>
+        
     </div>
+    </form>
 </section>
 <!-- Shoping Cart Section End -->

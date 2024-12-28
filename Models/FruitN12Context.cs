@@ -57,6 +57,8 @@ public partial class FruitN12Context : DbContext
 
     public DbSet<AdminUser> AdminUsers { get; set; }
 
+    public DbSet<Cart> _Cart { get; set; }
+
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -395,6 +397,18 @@ public partial class FruitN12Context : DbContext
                 .HasColumnName("company_name");
             entity.Property(e => e.Name).HasMaxLength(50);
             entity.Property(e => e.Phone).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<Cart>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+
+            entity.ToTable("Cart");
+
+            entity.Property(e => e.Id).HasColumnName("ID");
+
+            entity.Property(e => e.Quantity).HasColumnName("Quantity");
+
         });
 
         OnModelCreatingPartial(modelBuilder);
