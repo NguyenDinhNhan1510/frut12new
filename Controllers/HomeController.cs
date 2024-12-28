@@ -21,6 +21,7 @@ namespace Fruit_N12.Controllers
             ViewBag.productNew = _context.TbProducts.Where(m => m.IsNew).ToList();
             ViewBag.productTop = _context.TbProducts.Where(m => m.IsBestSeller).ToList();
             ViewBag.productStar = _context.TbProducts.Where(m => m.Star >=3).ToList();
+            TempData["cart"] = _context._Cart.Count();
             return View();
         }
 

@@ -8,7 +8,7 @@ namespace Fruit_N12.Controllers
         public int ProductId { get; set; }
         public string Title { get; set; }
         public int Quantity {  get; set; }
-        public decimal Price { get; set; }
+        public int Price { get; set; }
 
         public decimal  Total
         {
@@ -16,10 +16,11 @@ namespace Fruit_N12.Controllers
         }
         public string Image { get; set; }
 
-        //public CartItemModel()
-       // { 
+        public CartItemModel()
+        { 
             
-        //}
+        }
+
         public CartItemModel(TbProduct product)
         {
             ProductId = product.ProductId;
