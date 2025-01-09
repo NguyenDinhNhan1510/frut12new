@@ -61,9 +61,39 @@
                                     <label asp-for="Image" class="control-label">Ảnh</label>
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
-                                            <button type="button" class="btn btn-success" onclick="openDialog()">Choose a picture</button>
+                                            <button type="button" class="btn btn-success" onclick="openDialog1()">Choose a picture</button>
+
+                                            <!-- Ẩn input file-->
+                                            <input type="file" id="imageUploader" accept="image/*" style="display: none;" />
+
+                                            <script>
+                                                function openDialog1() {
+                                                    document.getElementById("imageUploader").click(); // Mở hộp thoại chọn ảnh
+                                                }
+
+                                                document.getElementById("imageUploader").addEventListener("change", function (event) {
+                                                    const file = event.target.files[0]; // Lấy file ảnh
+                                                    if (file) {
+                                                        const reader = new FileReader();
+                                                        reader.onload = function (e) {
+                                                            document.getElementById("file_input").value = e.target.result;
+                                                            
+
+                                                            // Hiển thị ten anh
+                                                            
+                                                            document.getElementById("file_display").value = file.name;
+
+
+                                                        };
+                                                        reader.readAsDataURL(file); // Chuyển ảnh thành Base64
+                                                       
+                                                    }
+                                                });
+
+                                            </script>
                                         </div>
-                                        <input type="text" class="form-control" id="file_input" asp-for="Image" aria-describedby="button-addon2">
+                                        <input type="text" class="form-control" id="file_display" value="@Model.Image"  aria-describedby="button-addon2">
+                                        <input type="text" id="file_input" style="display: none;" asp-for="Image">
                                     </div>
                                     <span asp-validation-for="Image" class="text-danger"></span>
                                 </div>

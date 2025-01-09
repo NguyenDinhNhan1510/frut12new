@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Fruit_N12.Models;
+using Fruit_N12.Areas.Admin.Models;
+using Microsoft.VisualStudio.Web.CodeGeneration.CommandLine;
 
 
 namespace Fruit_N12.Areas.Admin.Controllers
@@ -62,6 +64,7 @@ namespace Fruit_N12.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                tbProduct.Image = UploadOnRootAndConvertToUrLImageModel.UploadOnRootAndConvertToUrlImage(tbProduct.Image);
                 tbProduct.Alias = Fruit_N12.Utilities.Function.TitleSlugGenerationAlias(tbProduct.Title);
                 _context.Add(tbProduct);
                 await _context.SaveChangesAsync();
@@ -72,6 +75,11 @@ namespace Fruit_N12.Areas.Admin.Controllers
                 SelectList(_context.TbProductCategories, "CategoryProductId", "Title", tbProduct.CategoryProductId);
             return View(tbProduct);
         }
+
+        
+
+
+
 
         // GET: Admin/Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -102,10 +110,16 @@ namespace Fruit_N12.Areas.Admin.Controllers
                 return NotFound();
             }
 
+            if (!UploadOnRootAndConvertToUrLImageModel.IsBase64String(tbProduct.Image))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
+                    tbProduct.Image = UploadOnRootAndConvertToUrLImageModel.UploadOnRootAndConvertToUrlImage(tbProduct.Image);
                     _context.Update(tbProduct);
                     await _context.SaveChangesAsync();
                 }
@@ -127,6 +141,7 @@ namespace Fruit_N12.Areas.Admin.Controllers
         }
 
         // GET: Admin/Products/Delete/5
+        [HttpGet]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -164,5 +179,6 @@ namespace Fruit_N12.Areas.Admin.Controllers
         {
             return _context.TbProducts.Any(e => e.ProductId == id);
         }
-    }
+
+	}
 }

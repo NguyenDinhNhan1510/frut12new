@@ -1,4 +1,18 @@
-﻿<div class="content-wrapper">
+﻿@{
+    var CartItems = ViewBag.CartItems;
+    var Quanlity = ViewBag.QuanTities;
+    var Days = ViewBag.Labels;
+    var Totals = ViewBag.Totals;
+}
+
+<head>
+    <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' https://cdn.jsdelivr.net;">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<div class="content-wrapper">
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -24,14 +38,14 @@
                 <!-- small box -->
                 <div class="small-box bg-info">
                     <div class="inner">
-                        <h3>150</h3>
+                        <h3>@TempData["NumberOrder"]</h3>
 
                         <p>New Orders</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-bag"></i>
                     </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="~/Admin/NewOrder/Index" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
@@ -39,7 +53,7 @@
                 <!-- small box -->
                 <div class="small-box bg-success">
                     <div class="inner">
-                        <h3>53<sup style="font-size: 20px">%</sup></h3>
+                        <h3><sup style="font-size: 20px"></sup></h3>
 
                         <p>Bounce Rate</p>
                     </div>
@@ -54,7 +68,7 @@
                 <!-- small box -->
                 <div class="small-box bg-warning">
                     <div class="inner">
-                        <h3>44</h3>
+                        <h3></h3>
 
                         <p>User Registrations</p>
                     </div>
@@ -69,7 +83,7 @@
                 <!-- small box -->
                 <div class="small-box bg-danger">
                     <div class="inner">
-                        <h3>65</h3>
+                        <h3></h3>
 
                         <p>Unique Visitors</p>
                     </div>
@@ -96,7 +110,7 @@
                         <div class="card-tools">
                             <ul class="nav nav-pills ml-auto">
                                 <li class="nav-item">
-                                    <a class="nav-link active" href="#revenue-chart" data-toggle="tab">Area</a>
+                                    <a class="nav-link active" href="#revenue-chart" data-toggle="tab">Bar</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="#sales-chart" data-toggle="tab">Donut</a>
@@ -114,6 +128,117 @@
                             <div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;">
                                 <canvas id="sales-chart-canvas" height="300" style="height: 300px;"></canvas>
                             </div>
+                            <script>
+                                    document.addEventListener("DOMContentLoaded", function () {
+
+                                        var values = @Html.Raw(Json.Serialize(Quanlity));
+                                        var cartitems = @Html.Raw(Json.Serialize(CartItems));
+
+                                        var ctx = document.getElementById('sales-chart-canvas').getContext('2d');
+
+                                        new Chart(ctx, {
+                                            type: 'pie',
+                                            data: {
+                                                labels: cartitems,
+                                                datasets: [{
+                                                    label: 'Doanh thu',
+                                                    data: values,
+                                                    backgroundColor: [
+                                                        'rgba(6, 128, 250, 0.8)',   // Xanh dương
+                                                        'rgba(255, 99, 132, 0.8)',  // Đỏ
+                                                        'rgba(54, 162, 235, 0.8)',  // Xanh nước biển
+                                                        'rgba(255, 206, 86, 0.8)',  // Vàng
+                                                        'rgba(75, 192, 192, 0.8)',  // Xanh lục
+                                                        'rgba(153, 102, 255, 0.8)', // Tím
+                                                        'rgba(255, 159, 64, 0.8)',  // Cam
+                                                        'rgba(199, 199, 199, 0.8)', // Xám
+                                                        'rgba(83, 102, 255, 0.8)',  // Xanh lam đậm
+                                                        'rgba(255, 77, 136, 0.8)'   // Hồng
+                                                    ],
+                                                    borderColor: 'white',  // Đường viền trắng để nổi bật
+                                                    borderWidth: 2,
+                                                    hoverOffset: 15,  // Hiệu ứng phóng to khi di chuột vào
+                                                    borderRadius: 10  // Làm bo góc
+                                                }]
+                                            },
+                                            options: {
+                                                responsive: true,
+                                                maintainAspectRatio: false,  // Không giới hạn tỷ lệ
+                                                plugins: {
+                                                    legend: {
+                                                        display: true,
+                                                        position: 'right',  // Chuyển chú thích sang phải
+                                                        labels: {
+                                                            font: {
+                                                                size: 14
+                                                            },
+                                                            color: '#333'
+                                                        }
+                                                    },
+                                                    tooltip: {
+                                                        enabled: true,
+                                                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                                                        titleFont: {
+                                                            size: 16
+                                                        },
+                                                        bodyFont: {
+                                                            size: 14
+                                                        },
+                                                        padding: 10
+                                                    }
+                                                },
+                                                animation: {
+                                                    animateScale: true,  // Hiệu ứng scale
+                                                    animateRotate: true  // Hiệu ứng xoay khi vẽ
+                                                }
+                                            }
+                                        });
+
+                                        var daysv = @Html.Raw(Json.Serialize(Days));
+                                        var Totalsv = @Html.Raw(Json.Serialize(Totals));
+
+                                        var barchart = document.getElementById('revenue-chart-canvas').getContext('2d');
+                                        new Chart(barchart, {
+                                            type: 'bar',
+                                            data: {
+                                                labels: daysv,
+                                                datasets: [{
+                                                    label: 'Bar Chart',
+                                                    data: Totalsv,
+                                                    backgroundColor: [
+                                                        'rgba(6, 128, 250, 0.8)',   // Xanh dương
+                                                        'rgba(255, 99, 132, 0.8)',  // Đỏ
+                                                        'rgba(54, 162, 235, 0.8)',  // Xanh nước biển
+                                                        'rgba(255, 206, 86, 0.8)',  // Vàng
+                                                        'rgba(75, 192, 192, 0.8)',  // Xanh lục
+                                                        'rgba(153, 102, 255, 0.8)', // Tím
+                                                        'rgba(255, 159, 64, 0.8)',  // Cam
+                                                        'rgba(199, 199, 199, 0.8)', // Xám
+                                                        'rgba(83, 102, 255, 0.8)',  // Xanh lam đậm
+                                                        'rgba(255, 77, 136, 0.8)'   // Hồng
+                                                    ],
+                                                    borderColor: 'white',  // Đường viền trắng để nổi bật
+                                                    borderWidth: 2,
+                                                    hoverOffset: 15,  // Hiệu ứng phóng to khi di chuột vào
+                                                }]
+                                            },
+                                            options: {
+                                                scales: {
+                                                    y: { beginAtZero: true }
+                                                }
+                                            }
+                                        });
+                                    });
+
+                                  
+
+                            </script>
+                                <style>
+                                    canvas {
+                                        width: 100% !important;
+                                        height: 300px !important;
+                                    }
+                                </style>
                         </div>
                     </div><!-- /.card-body -->
                 </div>
