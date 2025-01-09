@@ -39,7 +39,7 @@ namespace Harmic_0.Areas.Admin.Controllers
                 return RedirectToAction("Index", "Register");
             }
             //Nếu không có thì thêm vào csdl 
-            Function._MessageEmail = string.Empty;
+            //Function._MessageEmail = string.Empty;
            // user.Password = Function.MD5Password(user.Password);
             _context.Add(user);
             _context.SaveChanges();

@@ -36,7 +36,7 @@
 						</div>
 						<!-- /.card-header -->
 						<!-- form start -->
-						<form asp-action="Create">
+						<form asp-controller="Products" asp-action="Create" enctype="multipart/form-data">
 							<div class="card-body">
 								<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 								<div class="form-group">
@@ -66,9 +66,38 @@
 									<label asp-for="Image" class="control-label">Chọn Ảnh</label>
 									<div class="input-group mb-3">
 										<div class="input-group-prepend">
-											<button type="button" class="btn btn-success" onclick="openDialog()">Choose a picture</button>
+											<button type="button" class="btn btn-success" onclick="openDialog1()">Choose a picture</button>
+
+
+                                            <!-- Ẩn input file-->
+                                            <input type="file" id="imageUploader" accept="image/*" style="display: none;" />
+
+											<script>
+												function openDialog1() {
+													document.getElementById("imageUploader").click(); // Mở hộp thoại chọn ảnh
+												}
+
+												document.getElementById("imageUploader").addEventListener("change", function (event) {
+													const file = event.target.files[0]; // Lấy file ảnh
+													if (file) {
+														const reader = new FileReader();
+														reader.onload = function (e) {
+															document.getElementById("file_input").value = e.target.result;
+
+															// Hiển thị ten anh
+
+															document.getElementById("file_display").value = file.name;
+															
+														};
+														reader.readAsDataURL(file); // Chuyển ảnh thành Base64
+														
+													}
+												});
+
+                                            </script>
 										</div>
-										<input type="text" class="form-control" id="file_input" asp-for="Image" aria-describedby="button-addon2" />
+										<input type="text" class="form-control" id="file_display" aria-describedby="button-addon2">
+										<input type="text" style="visibility: hidden;" class="form-control" asp-for="Image" id="file_input" aria-describedby="button-addon2" />
 									</div>
 									<span asp-validation-for="Image" class="text-danger"></span>
 								</div>
@@ -103,7 +132,7 @@
 							<!-- /.card-body -->
 
 							<div class="card-footer">
-								<button type="submit" class="btn btn-primary">Submit</button>
+								<button type="submit" id="uploadForm" class="btn btn-primary">Submit</button>
 							</div>
 						</form>
 					</div>

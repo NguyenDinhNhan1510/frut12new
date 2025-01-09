@@ -11,29 +11,34 @@ namespace Fruit_N12.Controllers
     public class CartController : Controller
     {
         private readonly FruitN12Context fruitN12Context;
+
+
         public CartController(FruitN12Context _context)
         {
             fruitN12Context = _context;
         }
+
         public IActionResult Index()
         {
             //List<CartItemModel> cartItems = HttpContext.Session.GetJson<List<CartItemModel>>("Cart") ?? new List<CartItemModel>();
+             var userId = User.FindFirst("AccountId")?.Value;
+ 
+             int id = int.TryParse(userId, out var parsedId) ? parsedId : 0;
 
-            List<CartItemModel> cartItems = fruitN12Context._Cart
-    .Select(c => new
-    {
-        Cart = c,
-        Product = fruitN12Context.TbProducts.FirstOrDefault(p => p.ProductId == c.Id)
-    })
-    .Where(x => x.Product != null)
-    .Select(x => new CartItemModel
-    {
-        ProductId = x.Product.ProductId,
-        Title = x.Product.Title,
-        Price = (int)x.Product.Price,
-        Quantity = x.Cart.Quantity,
-        Image = x.Product.Image
-    }).ToList();
+
+            var cartUser = fruitN12Context._Cart.Where(cart => cart.AccountId == id).ToList();
+
+            //lay id product
+            var cartItems = (from cart in cartUser
+                             join product in fruitN12Context.TbProducts on cart.ProductId equals product.ProductId
+                             select new CartItemModel
+                             {
+                                 ProductId = product.ProductId,
+                                 Title = product.Title,
+                                 Price = (int)product.Price,
+                                 Quantity = cart.Quantity,
+                                 Image = product.Image
+                             }).ToList();
 
             CartItemViewModel cartVM = new()
             {
@@ -47,10 +52,7 @@ namespace Fruit_N12.Controllers
             return View(cartVM);
         }
 
-        // public AcceptedResult CheckOut()
-        //{
-        //   return View("~/Views/Checkout/Index.cshtml");
-        //}
+
 
         /*  public async Task<IActionResult> Add(int productId)
           {
@@ -76,12 +78,21 @@ namespace Fruit_N12.Controllers
         [HttpPost]
         public async Task<IActionResult> CartChange(CartItemViewModel cartItemViewModel)
         {
-            var cartdb = fruitN12Context._Cart.ToList();
+            
+            var userId = User.FindFirst("AccountId")?.Value;
+            int id = int.TryParse(userId, out var parsedId) ? parsedId : 0;
 
-            for (int i = 0; i < cartdb.Count && i < cartItemViewModel.CartItems.Count; i++)
+            var cartUser = fruitN12Context._Cart.Where(cart => cart.AccountId == id).ToList();
+
+            
+
+            for (int i = 0; i < cartUser.Count && i < cartItemViewModel.CartItems.Count; i++)
             {
-                cartdb[i].Quantity = cartItemViewModel.CartItems[i].Quantity;
-                fruitN12Context._Cart.Update(cartdb[i]); // Cập nhật từng mục
+
+                    cartUser[i].Quantity = cartItemViewModel.CartItems[i].Quantity;
+                    fruitN12Context._Cart.Update(cartUser[i]); // Cập nhật từng mục
+                
+
             }
 
             fruitN12Context.SaveChanges(); // Lưu thay đổi
@@ -92,9 +103,13 @@ namespace Fruit_N12.Controllers
         [Route("Cart/Delete/{productIdString}")]
         public async Task<IActionResult> DeleteItem(string productIdString)
         {
-            int productId = int.Parse(productIdString);
+            var userId = User.FindFirst("AccountId")?.Value;
+            int id = int.TryParse(userId, out var parsedId) ? parsedId : 0;
+            var cartUser = fruitN12Context._Cart.Where(cart => cart.AccountId == id).ToList();
 
-            Cart item = await fruitN12Context._Cart.FindAsync(productId);
+            int productId =  int.Parse(productIdString);
+
+            Cart item = cartUser.FirstOrDefault(cart => cart.ProductId == productId);
 
             fruitN12Context._Cart.RemoveRange(item);
             fruitN12Context.SaveChanges();
@@ -102,10 +117,20 @@ namespace Fruit_N12.Controllers
             return RedirectToAction("Index", "Cart");
         }
 
-            [Route("Cart/Add/{productIdString}")]
+        [Route("Cart/Add/{productIdString}")]
         public async Task<IActionResult> Add(string productIdString)
         {
             int productId = int.Parse(productIdString);
+            var userId = User.FindFirst("AccountId")?.Value;
+            var username = User.Identity.Name;
+
+            if(userId == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+
+            // Chuyển userId thành kiểu int nếu cần
+            int id = int.TryParse(userId, out var parsedId) ? parsedId : 0;
 
             // Tìm sản phẩm từ database
             TbProduct product = await fruitN12Context.TbProducts.FindAsync(productId);
@@ -122,7 +147,7 @@ namespace Fruit_N12.Controllers
 
 
             // Kiểm tra sản phẩm đã có trong giỏ hàng chưa
-            Cart cartItem = await fruitN12Context._Cart.Where(c => c.Id == productId).FirstOrDefaultAsync();
+            Cart cartItem = await fruitN12Context._Cart.Where(c => c.ProductId == productId).Where(y=>y.AccountId == id).FirstOrDefaultAsync();
 
 
 
@@ -131,9 +156,10 @@ namespace Fruit_N12.Controllers
 
                 Cart orderDetail = new Cart()
                 {
-
-                    Id = productId,
-                    Quantity = 1
+                    Id = productId+"_"+ username+"_"+ userId,
+                    ProductId = productId,
+                    Quantity = 1,
+                    AccountId = id
                 };
 
                 fruitN12Context._Cart.Add(orderDetail);
@@ -148,15 +174,87 @@ namespace Fruit_N12.Controllers
             }
 
 
-
-
-            // Cập nhật lại session với giỏ hàng mới
-            //HttpContext.Session.SetJson("Cart", cart);
-
-
             // Chuyển hướng về trang trước đó
             return Redirect(Request.Headers["Referer"].ToString());
         }
 
+        public int? findPrice(int productId)
+        {
+            var find = fruitN12Context.TbProducts.Find(productId);
+
+            return find.Price;
+        }
+
+
+
+  
+        [Route("Cart/CheckOut/{TotalAmountString}")]
+        public async Task<IActionResult> CheckOut(string TotalAmountString)
+        {
+            var userId = User.FindFirst("AccountId")?.Value;
+            int id = int.TryParse(userId, out var parsedId) ? parsedId : 0;
+            var cartUser = fruitN12Context._Cart.Where(cart => cart.AccountId == id).ToList();
+
+            //tinh tong san pham mua
+            int? totalQuantity = cartUser.Sum(p => p.Quantity);
+
+
+            //find information customer
+            var UserInfor = fruitN12Context.TbAccounts.Find(id);
+
+            //convert int
+            int TotalAmount = int.Parse(TotalAmountString);
+
+
+
+            if (cartUser != null && userId != null)
+            {
+                 TbOrder tbOrder = new TbOrder()
+                  {
+                      Code = "DH"+userId,
+                      CustomerName = UserInfor.FullName,
+                      Phone = UserInfor.Phone,
+                      TotalAmount = TotalAmount,
+                      CreatedDate = DateTime.Now,
+                      Quanlity = totalQuantity
+                      
+                  };
+
+                //them vao tbOrder
+                fruitN12Context.TbOrders.Add(tbOrder);
+                fruitN12Context.SaveChanges();
+
+                for(int i = 0; i < cartUser.Count(); i++)
+                {
+                    TbOrderDetail tbOrderDetail = new TbOrderDetail()
+                    {
+                        OrderId = tbOrder.OrderId,
+                        ProductId = cartUser[i].ProductId,
+                        Price = findPrice(cartUser[i].ProductId),
+                        Quantity = cartUser[i].Quantity,
+
+                    };
+
+                    fruitN12Context.TbOrderDetails.Add(tbOrderDetail);
+                }
+
+               
+
+                
+                //fruitN12Context.TbOrderDetails.Add(tbOrderDetail);
+                
+               
+                //xoa trong shopping cart
+                fruitN12Context._Cart.RemoveRange(cartUser);
+
+                fruitN12Context.SaveChanges();
+
+                TempData["OderMesseger"] = "Order Success!";
+                
+
+            }
+
+            return RedirectToAction("Index", "Cart");
+        }
     }
 }

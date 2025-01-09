@@ -1,0 +1,116 @@
+﻿@model Fruit_N12.Areas.Admin.Models.Order;
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="table ">
+    <h1>Details</h1>
+
+    <div>
+        <h4>Information</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.OrderId)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.OrderId)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.CustomerName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.CustomerName)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Phone)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Phone)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Address)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Address)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.TotalAmount)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.TotalAmount)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Quanlity)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Quanlity)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.OrderDate)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.OrderDate)
+            </dd>
+        </dl>
+    </div>
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+
+</div>
+
+<style>
+    .table {
+        border-collapse: separate; /* Chuyển từ collapse sang separate */
+        border-spacing: 0px 8px; /* Tạo khoảng cách giữa các dòng */
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        margin: auto;
+        width: 70%;
+        box-shadow: 0px 0px 6px 2px #e4e4e4;
+        background-color: #fff;
+        padding: 15px;
+    }
+
+        .table h1 {
+            text-align: center;
+            color: #333;
+        }
+
+    dl.row {
+        padding: 10px;
+    }
+
+    dt, dd {
+        padding: 8px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    dt {
+        font-weight: bold;
+        color: #333;
+    }
+
+    dd {
+        color: #666;
+    }
+
+    div {
+        padding: 5px;
+    }
+
+    /* Định dạng nút chỉnh sửa */
+    a {
+        text-decoration: none;
+        color: #007bff;
+        font-weight: bold;
+        margin-right: 10px;
+    }
+
+        a:hover {
+            text-decoration: underline;
+        }
+</style>

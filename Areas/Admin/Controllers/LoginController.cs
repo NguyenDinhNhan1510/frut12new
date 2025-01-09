@@ -33,7 +33,7 @@ namespace WebApplication1.Areas.Admin.Controllers
 
             if (check == null)
             {
-                Function._Message = "Thông báo có kẻ xâm nhập hệ thống  ";
+                Function._Message = "Đăng nhập không thành công";
                 return RedirectToAction("Index", "Login");
             }
             // vào trang Admin nếu đúng user và pass

@@ -1,0 +1,79 @@
+﻿@using Fruit_N12.Areas.Admin.Models
+@model IEnumerable<Order>;
+
+<table class="table w-10011 mt">
+    <thead>
+        <tr>
+            <th>OrderId</th>
+            <th>Address</th>
+            <th>Quanlity</th>
+            <th>TotalAmount</th>
+            <th>OrderStatus</th>
+            <th>OrderDate</th>
+            <th>Options</th>
+        </tr>
+        <!--
+        <th>
+            <a href="~/persons/index">Email</a>
+        </th>
+        <th>
+            <a href="~/persons/index">Date of Birth</a>
+        </th>
+        <th>
+            <a href="~/persons/index">Age</a>
+        </th>
+        <th>
+            <a href="~/persons/index">Gender</a>
+        </th>
+        <th>
+            <a href="~/persons/index">Country</a>
+        </th>
+        <th>
+            <a href="~/persons/index">Address</a>
+        </th>
+        <td>
+            <a href="~/persons/index">Receive News Letter</a>
+              </td>-->
+
+    </thead>
+    <tbody>
+        @foreach (Order OrderInfor in Model)
+        {
+            <tr>
+                <td >@OrderInfor.OrderId</td>
+                <td >@OrderInfor.Address</td>
+                <td >@OrderInfor.Quanlity</td>
+                <td >@OrderInfor.TotalAmount</td>
+                <td >@OrderInfor.OrderStatus</td>
+                <td >@OrderInfor.OrderDate</td>
+
+                <td >
+                    <a asp-action="Details" asp-route-id="@OrderInfor.OrderId">Detail</a>
+                    @*/Person/Edit/1*@
+                </td>
+
+            </tr>
+        }
+        <tr></tr>
+    </tbody>
+
+</table>
+
+<style>
+    .table {
+        border-collapse: collapse;
+        border: 1px solid #ffffff;
+        margin-left: 35px;
+        box-shadow: 0px 0px 4px 2px #e4e4e4;
+        /*margin: 5px 0px;*/
+        margin: auto;
+    }
+
+    .w-10011 {
+        width: 70%;
+    }
+
+    .mt {
+        margin-top: 10px;
+    }
+</style>

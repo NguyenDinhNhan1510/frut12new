@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Fruit_N12.Areas.Admin.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fruit_N12.Models;
@@ -405,9 +406,17 @@ public partial class FruitN12Context : DbContext
 
             entity.ToTable("Cart");
 
-            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.Id)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("Id");
+
+
+            entity.Property(e => e.ProductId).HasColumnName("ProductId");
 
             entity.Property(e => e.Quantity).HasColumnName("Quantity");
+
+            entity.Property(e => e.AccountId).HasColumnName("AccountId");
 
         });
 

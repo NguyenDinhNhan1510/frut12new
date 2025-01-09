@@ -85,7 +85,7 @@
                                             </div>
                                         </td>
                                         <td class="shoping__cart__total">
-                                                @((item.value.Quantity * item.value.Price).ToString("C"))
+                                                @((item.value.Quantity * item.value.Price))
                                         </td>
                                         <td class="shoping__cart__item__close">
                                                 <a href="~/Cart/Delete/@item.value.ProductId"><span class="icon_close"></span></a>
@@ -109,7 +109,7 @@
                     <a href="~/Home/Index" class="primary-btn cart-btn">CONTINUE SHOPPING </a>
 
 
-                        <button>
+                        <button class="update-cart-btn">
                             <a class="primary-btn cart-btn cart-btn-right">
                             
                                 <span class="icon_loading"></span>
@@ -117,6 +117,30 @@
                             
                             </a>
                         </button>
+
+                        <style>
+                            .shoping__cart__btns {
+                                display: flex;
+                                justify-content: space-between; /* Đẩy hai nút về hai bên */
+                                align-items: center;
+                                width: 100%;
+                            }
+
+                            .update-cart-btn {
+                                margin-left: auto; /* Đẩy nút về bên phải */
+                                margin-left: auto; /* Đẩy nút về bên phải */
+                                border: 1px solid #ccc; /* Đặt viền mỏng hơn */
+                                padding: 8px 16px; /* Điều chỉnh khoảng cách bên trong */
+                                background-color: white; /* Màu nền */
+                                cursor: pointer; /* Hiển thị con trỏ khi hover */
+                            }
+
+                                .update-cart-btn a {
+                                    text-decoration: none; /* Bỏ gạch chân */
+                                    color: black; /* Màu chữ */
+                                }
+
+                        </style>
 
                 </div>
                 
@@ -138,8 +162,9 @@
                     <ul>
                         <li>Subtotal <span>@Model.GrandTotal</span></li>
                         <li>Total <span>@Model.GrandTotal</span></li>
-                    </ul>
-                    <a href="#" class="primary-btn">PROCEED TO CHECKOUT</a>
+                        </ul>
+                        <span style="color: red">@TempData["OderMesseger"]</span>
+                        <a href="~/Cart/CheckOut/@Model.GrandTotal" class="primary-btn">PROCEED TO CHECKOUT</a>       
                 </div>
             </div>
         </div>

@@ -27,9 +27,16 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
+    "MyApp": {
+      "commandName": "Project",
+      "hotReloadEnabled": true,
+      "hotReloadCSS": true
+    },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
+      "hotReloadEnabled": true,
+      "hotReloadCSS": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
