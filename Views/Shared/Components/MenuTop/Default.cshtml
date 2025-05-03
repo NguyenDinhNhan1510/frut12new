@@ -1,10 +1,21 @@
 ﻿@model IEnumerable<Fruit_N12.Models.TbMenu>
 
-@foreach (var item in Model.Where(i => i.Levels == 1))
+@*foreach (var item in Model.Where(i => i.Levels == 1))
 {
 	<li class="active">
 		<a href="/@item.Alias">
 			@item.Title
 		</a>
 	</li>
-}
+}*@
+
+<li class="active">
+	<a href="~/Home/Index">
+		Home
+	</a>
+</li>
+<li class="active">
+	<a href="~/Order/Index">
+		Orders
+	</a>
+</li>

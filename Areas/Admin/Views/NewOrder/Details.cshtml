@@ -7,59 +7,90 @@
 
 <div class="table ">
     <h1>Details</h1>
+    <form asp-action="Details" asp-controller="NewOrder">
+        <div>
+            <h4>Information</h4>
+            <hr />
 
-    <div>
-        <h4>Information</h4>
-        <hr />
-        <dl class="row">
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.OrderId)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.OrderId)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.CustomerName)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.CustomerName)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Phone)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Phone)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Address)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Address)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.TotalAmount)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.TotalAmount)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Quanlity)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Quanlity)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.OrderDate)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.OrderDate)
-            </dd>
-        </dl>
-    </div>
-    <div>
-        <a asp-action="Index">Back to List</a>
-    </div>
+            <dl class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.OrderId)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.OrderId)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.CustomerName)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.CustomerName)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Phone)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Phone)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Address)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Address)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.TotalAmount)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.TotalAmount)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Quanlity)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Quanlity)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.OrderDate)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.OrderDate)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.PaymentStatusId)
+                </dt>
+                <input type="hidden" asp-for="OrderId" />
+                <dd class="col-sm-10">
+                    <div class="options">
+                        <select asp-for="PaymentStatusId">
+                            <option value="1">Đang kiểm tra thanh toán</option>
+                            <option value="2">Chưa thanh toán</option>
+                            <option value="3">Đã thanh toán</option>
+                        </select>
+                    </div>
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.OrderStatus)
+                </dt>
+                <dd class="col-sm-10">
+                    <div class="options">
+                        <select  asp-for="OrderStatusId">
+                            <option value="1">Đang chờ xử lý</option>
+                            <option value="2">Đang giao hàng</option>
+                            <option value="3">Đã giao hàng</option>
+                        </select>
+                    </div>
+                </dd>
 
+            </dl>
+
+        </div>
+        <div>
+            <a asp-action="Index">Back to List</a>
+            <button class="btn btn-confirm">Edit</button>
+
+
+        </div>
+    </form>
 </div>
 
 <style>
@@ -113,4 +144,17 @@
         a:hover {
             text-decoration: underline;
         }
+
+    .btn {
+        padding: 5px 10px;
+        margin: 5px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-confirm {
+        background-color: #4CAF50;
+        color: white;
+    }
 </style>

@@ -9,6 +9,11 @@
         public int? TotalAmount { get; set; }
         public int? Quanlity { get; set; }
         public string? OrderStatus { get; set; }
+
+        public int? OrderStatusId { get; set; }
+
+        public int? PaymentStatusId { get; set; }
+
         public DateTime? OrderDate { get; set; }
     }
 }

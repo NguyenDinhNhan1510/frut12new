@@ -17,5 +17,7 @@ public partial class Invoice
 
     public int? PaymentMethodId { get; set; }
 
+    public int? PaymentStatusId { get; set; }
+
     public virtual PaymentMethod? PaymentMethod { get; set; }
 }

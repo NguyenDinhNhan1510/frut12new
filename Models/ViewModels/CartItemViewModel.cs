@@ -7,6 +7,7 @@ namespace Fruit_N12.Models.ViewModels
         public List<CartItemModel> CartItems { get; set; }
         public decimal? GrandTotal { get; set; }
 
+
         public void CartItemAddModel() 
         {
 

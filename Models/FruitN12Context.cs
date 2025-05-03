@@ -60,6 +60,8 @@ public partial class FruitN12Context : DbContext
 
     public DbSet<Cart> _Cart { get; set; }
 
+    public DbSet<PaymentStatus> PaymentStatus { get; set; }
+
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -86,6 +88,7 @@ public partial class FruitN12Context : DbContext
             entity.Property(e => e.InvoiceId).HasColumnName("invoice_id");
             entity.Property(e => e.InvoiceDate).HasColumnName("invoice_date");
             entity.Property(e => e.PaymentMethodId).HasColumnName("payment_method_id");
+            entity.Property(e => e.PaymentStatusId).HasColumnName("PaymentStatus_id");
             entity.Property(e => e.TotalAmount)
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("total_amount");
@@ -112,6 +115,18 @@ public partial class FruitN12Context : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("method_name");
+        });
+
+        modelBuilder.Entity<PaymentStatus>(entity =>
+        {
+            entity.HasKey(e => e.PaymentStatusId);
+
+            entity.Property(e => e.PaymentStatusId).HasColumnName("payment_status_id");
+
+            entity.Property(e => e.PaymentName)
+                .HasMaxLength(456)
+                .IsUnicode(false)
+                .HasColumnName("payment_status_name");
         });
 
         modelBuilder.Entity<ShippingDetail>(entity =>

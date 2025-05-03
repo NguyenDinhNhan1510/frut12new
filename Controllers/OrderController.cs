@@ -1,6 +1,8 @@
 ﻿using Fruit_N12.Models.ViewModels;
 using Fruit_N12.Models;
 using Microsoft.AspNetCore.Mvc;
+using Fruit_N12.Areas.Admin.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Fruit_N12.Controllers
 {
@@ -13,41 +15,52 @@ namespace Fruit_N12.Controllers
             fruitN12Context = _context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var userId = User.FindFirst("AccountId")?.Value;
 
             string codeUserOrder = "DH" + userId;
 
 
-            var OrderUser = fruitN12Context.TbOrders.FirstOrDefault(x => x.Code.Equals(codeUserOrder));
+            var OrderUser = fruitN12Context.TbOrders.Where(x => x.Code.Contains(codeUserOrder));
+
+            
+
+			var Items = (from order in OrderUser
+						 join invoice in fruitN12Context.Invoices on order.OrderId equals invoice.OrderId
+						  select new InvoiceViewModel
+						  {
+                              OrderId = order.OrderId,
+							  OrderCode = order.Code,
+							  DateTime = order.CreatedDate,
+							  PaymentMethod = fruitN12Context.PaymentMethods.Where(x => x.PaymentMethodId == invoice.PaymentMethodId).Select(x=>x.MethodName).FirstOrDefault(),
+							  OrderStatus = fruitN12Context.TbOrderStatuses.Where(x => x.OrderStatusId == order.OrderStatusId).Select(x => x.Name).FirstOrDefault(),
+                              TotalPrice = order.TotalAmount,
+							  PaymentStatus = fruitN12Context.PaymentStatus.Where(x => x.PaymentStatusId == invoice.PaymentStatusId).Select(x => x.PaymentName).FirstOrDefault()
+						  }).ToList();
+						 
 
 
 
-            //lay don hang
-            var itemsList = fruitN12Context.TbOrderDetails.Where(x => x.OrderId == OrderUser.OrderId);
+			return View(Items);
+        }
 
+        public async Task<IActionResult> CancelOrder(string OrderId)
+        {
+            int orderId = int.Parse(OrderId);
 
-            //lay id product
-            var cartItems = (from items in itemsList
-                             join product in fruitN12Context.TbProducts on items.ProductId equals product.ProductId
-                             select new CartItemModel
-                             {
-                                 ProductId = product.ProductId,
-                                 Title = product.Title,
-                                 Price = (int)product.Price,
-                                 Quantity = items.Quantity,
-                                 Image = product.Image
-                             }).ToList();
+            var order = await fruitN12Context.TbOrders.FindAsync(orderId);
 
-            CartItemViewModel cartVM = new()
+            if (order == null)
             {
-                CartItems = cartItems,
-                GrandTotal = cartItems.Sum(x => x.Quantity * x.Price)
+                return NotFound();
+            }
 
-            };
+            fruitN12Context.TbOrders.Remove(order);
+            fruitN12Context.TbOrderDetails.RemoveRange(fruitN12Context.TbOrderDetails.Where(x => x.OrderId == orderId));
+            fruitN12Context.Invoices.RemoveRange(fruitN12Context.Invoices.Where(x => x.OrderId == orderId));
 
-            return View(cartVM);
+            return View("Index");
         }
     }
 }

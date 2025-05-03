@@ -188,8 +188,8 @@ namespace Fruit_N12.Controllers
 
 
   
-        [Route("Cart/CheckOut/{TotalAmountString}")]
-        public async Task<IActionResult> CheckOut(string TotalAmountString)
+        [Route("Cart/CheckOut/{codeOrder}/{TotalAmountString}/{hasPay}")]
+        public async Task<IActionResult> CheckOut(string codeOrder, string TotalAmountString, string hasPay, [FromQuery] string address, [FromQuery] string phone)
         {
             var userId = User.FindFirst("AccountId")?.Value;
             int id = int.TryParse(userId, out var parsedId) ? parsedId : 0;
@@ -211,18 +211,33 @@ namespace Fruit_N12.Controllers
             {
                  TbOrder tbOrder = new TbOrder()
                   {
-                      Code = "DH"+userId,
+                      Code = "DH"+userId+"_"+codeOrder,
                       CustomerName = UserInfor.FullName,
-                      Phone = UserInfor.Phone,
+                      Phone = phone,
                       TotalAmount = TotalAmount,
                       CreatedDate = DateTime.Now,
-                      Quanlity = totalQuantity
+                      Quanlity = totalQuantity,
+                      OrderStatusId = 1,
+                      Address = address
                       
                   };
 
                 //them vao tbOrder
                 fruitN12Context.TbOrders.Add(tbOrder);
-                fruitN12Context.SaveChanges();
+                await fruitN12Context.SaveChangesAsync();
+
+                //them vao hoa don
+                Invoice tbInvoice = new Invoice()
+                {
+                    OrderId = tbOrder.OrderId,
+                    OrderStatusId = 1,
+                    InvoiceDate = DateOnly.FromDateTime(DateTime.Now),
+                    TotalAmount = TotalAmount,
+                    PaymentMethodId = 1,
+                    PaymentStatusId = 1
+                };
+
+                fruitN12Context.Invoices.Add(tbInvoice);
 
                 for(int i = 0; i < cartUser.Count(); i++)
                 {
@@ -247,10 +262,95 @@ namespace Fruit_N12.Controllers
                 //xoa trong shopping cart
                 fruitN12Context._Cart.RemoveRange(cartUser);
 
-                fruitN12Context.SaveChanges();
+                await fruitN12Context.SaveChangesAsync();
 
                 TempData["OderMesseger"] = "Order Success!";
                 
+
+            }
+
+            return RedirectToAction("Index", "Cart");
+        }
+
+        [Route("Cart/CheckOut/{codeOrder}/{TotalAmountString}")]
+        public async Task<IActionResult> CheckOut(string codeOrder, string TotalAmountString, [FromQuery] string address, [FromQuery] string phone)
+        {
+            var userId = User.FindFirst("AccountId")?.Value;
+            int id = int.TryParse(userId, out var parsedId) ? parsedId : 0;
+            var cartUser = fruitN12Context._Cart.Where(cart => cart.AccountId == id).ToList();
+
+            //tinh tong san pham mua
+            int? totalQuantity = cartUser.Sum(p => p.Quantity);
+
+
+            //find information customer
+            var UserInfor = fruitN12Context.TbAccounts.Find(id);
+
+            //convert int
+            int TotalAmount = int.Parse(TotalAmountString);
+
+
+
+            if (cartUser != null && userId != null)
+            {
+                TbOrder tbOrder = new TbOrder()
+                {
+                    Code = "DH" + userId + "_" + codeOrder,
+                    CustomerName = UserInfor.FullName,
+                    Phone = phone,
+                    TotalAmount = TotalAmount,
+                    CreatedDate = DateTime.Now,
+                    Quanlity = totalQuantity,
+                    OrderStatusId = 1,
+                    Address = address
+
+
+                };
+
+                //them vao tbOrder
+                fruitN12Context.TbOrders.Add(tbOrder);
+                await fruitN12Context.SaveChangesAsync();
+
+                //them vao hoa don
+                Invoice tbInvoice = new Invoice()
+                {
+                    OrderId = tbOrder.OrderId,
+                    OrderStatusId = 1,
+                    InvoiceDate = DateOnly.FromDateTime(DateTime.Now),
+                    TotalAmount = TotalAmount,
+                    PaymentMethodId = 2,
+                    PaymentStatusId = 2
+                };
+
+                fruitN12Context.Invoices.Add(tbInvoice);
+
+                for (int i = 0; i < cartUser.Count(); i++)
+                {
+                    TbOrderDetail tbOrderDetail = new TbOrderDetail()
+                    {
+                        OrderId = tbOrder.OrderId,
+                        ProductId = cartUser[i].ProductId,
+                        Price = findPrice(cartUser[i].ProductId),
+                        Quantity = cartUser[i].Quantity,
+
+                    };
+
+                    fruitN12Context.TbOrderDetails.Add(tbOrderDetail);
+                }
+
+
+
+
+                //fruitN12Context.TbOrderDetails.Add(tbOrderDetail);
+
+
+                //xoa trong shopping cart
+                fruitN12Context._Cart.RemoveRange(cartUser);
+
+                fruitN12Context.SaveChanges();
+
+                TempData["OderMesseger"] = "Order Success!";
+
 
             }
 

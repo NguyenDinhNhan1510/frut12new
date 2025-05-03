@@ -1,5 +1,5 @@
 ﻿@using Fruit_N12.Models.ViewModels;
-@model CartItemViewModel;
+@model List<InvoiceViewModel>;
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
@@ -31,18 +31,19 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th class="shoping__product">Products</th>
-                                    <th>Price</th>
-                                    <th>Quantity</th>
-                                    <th>Total</th>
-                                    <th></th>
+                                    <th style="width: 9%;">Mã Đơn Hàng</th>
+                                    <th style="width: 15%;">Time order</th>
+                                    <th style="width: 15%;">Total price</th>
+                                    <th style="width: 15%;">Trạng thái đơn hàng</th>
+                                    <th style ="width: 15%;">Trạng thái thanh toán</th>
+                                    <th style="width: 1%;">Options</th>
                                 </tr>
                             </thead>
                             <tbody>
 
-                                @if (Model?.CartItems != null)
+                                @if (Model != null)
                                 {
-                                    @foreach (var item in Model.CartItems.Select((value, i) => new { i, value }))
+                                  /*  @foreach (var item in Model.CartItems.Select((value, i) => new { i, value }))
                                     {
                                         <tr>
                                             <td class="shoping__cart__item">
@@ -66,6 +67,32 @@
                                             </td>
 
                                         </tr>
+                                    }*/
+
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td class="shoping__cart__item">
+                                                @item.OrderCode
+                                            </td>
+                                            <td class="shoping__cart__price">
+                                                @item.DateTime
+                                            </td>
+                                            <td class="shoping__cart__quantity">
+                                                @item.TotalPrice
+                                            </td>
+                                            <td class="shoping__cart__total">
+                                                @item.OrderStatus
+                                            </td>
+                                            <td class="shoping__cart__total">
+                                                @item.PaymentStatus
+                                            </td>
+                                            <td class="shoping__cart__item__close">
+                                                <a href="~/OrderDetails/Index?OrderId=@item.OrderId">Details</a>
+                                                
+                                            </td>
+                                            
+                                        </tr>
                                     }
 
                                 }
@@ -79,6 +106,7 @@
                     </div>
                 </div>
             </div>
+            @*
             <div class="row">
                 <div class="col-lg-12">
                     <div class="shoping__cart__btns">
@@ -98,7 +126,7 @@
                     </div>
                 </div>
             </div>
-
+            *@
         </div>
     </form>
 </section>

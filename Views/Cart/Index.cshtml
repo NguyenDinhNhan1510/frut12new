@@ -1,5 +1,5 @@
-﻿
-@using Fruit_N12.Models.ViewModels;
+﻿@using Fruit_N12.Models.ViewModels;
+@using Newtonsoft.Json
 @model CartItemViewModel;
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -23,98 +23,99 @@
 <!-- Shoping Cart Section Begin -->
 <section class="shoping-cart spad">
     <form asp-controller="Cart" asp-action="CartChange" method="post">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="shoping__cart__table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th class="shoping__product">Products</th>
-                                <th>Price</th>
-                                <th>Quantity</th>
-                                <th>Total</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="shoping__cart__table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="shoping__product">Products</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                            <script>
-                                'use strict';
-                                $(document).ready(function () {
-                                    var proQty = $('.pro-qty');
-                                    proQty.prepend('<span class="dec qtybtn">-</span>');
-                                    proQty.append('<span class="inc qtybtn">+</span>');
-                                    proQty.on('click', '.qtybtn', function () {
-                                        var $button = $(this);
-                                        var oldValue = $button.parent().find('input').val();
-                                        if ($button.hasClass('inc')) {
-                                            var newVal = parseFloat(oldValue) + 1;
-                                        } else {
-                                            // Don't allow decrementing below zero
-                                            if (oldValue > 0) {
-                                                var newVal = parseFloat(oldValue) - 1;
+                                <script>
+                                    'use strict';
+                                    $(document).ready(function () {
+                                        var proQty = $('.pro-qty');
+                                        proQty.prepend('<span class="dec qtybtn">-</span>');
+                                        proQty.append('<span class="inc qtybtn">+</span>');
+                                        proQty.on('click', '.qtybtn', function () {
+                                            var $button = $(this);
+                                            var oldValue = $button.parent().find('input').val();
+                                            if ($button.hasClass('inc')) {
+                                                var newVal = parseFloat(oldValue) + 1;
                                             } else {
-                                                newVal = 0;
+                                                // Don't allow decrementing below zero
+                                                if (oldValue > 0) {
+                                                    var newVal = parseFloat(oldValue) - 1;
+                                                } else {
+                                                    newVal = 0;
+                                                }
                                             }
-                                        }
-                                        $button.parent().find('input').val(newVal);
+                                            $button.parent().find('input').val(newVal);
+                                        });
                                     });
-                                });
-                            </script>
-                            
-                            @if (Model?.CartItems != null)
-                            {
-                                    @foreach (var item in Model.CartItems.Select((value, i) => new { i, value }))
+                                </script>
+
+                                @if (Model?.CartItems != null)
                                 {
-                                    <tr>
-                                        <td class="shoping__cart__item">
+                                    @foreach (var item in Model.CartItems.Select((value, i) => new { i, value }))
+                                    {
+                                        <tr>
+                                            <td class="shoping__cart__item">
                                                 <img src="@item.value.Image" alt="">
                                                 <h5>@item.value.Title</h5>
-                                        </td>
-                                        <td class="shoping__cart__price">
+                                            </td>
+                                            <td class="shoping__cart__price">
                                                 @item.value.Price
-                                        </td>
-                                        <td class="shoping__cart__quantity">
-                                            <div class="quantity">
-                                                <div class="pro-qty">
+                                            </td>
+                                            <td class="shoping__cart__quantity">
+                                                <div class="quantity">
+                                                    <div class="pro-qty">
 
                                                         <input asp-for="CartItems[@item.i].Quantity" type="text" value="@item.value.Quantity" name="CartItems[@item.i].Quantity">
-                                                    
+
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td class="shoping__cart__total">
+                                            </td>
+                                            <td class="shoping__cart__total">
                                                 @((item.value.Quantity * item.value.Price))
-                                        </td>
-                                        <td class="shoping__cart__item__close">
+                                            </td>
+                                            <td class="shoping__cart__item__close">
                                                 <a href="~/Cart/Delete/@item.value.ProductId"><span class="icon_close"></span></a>
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
+                                    }
+
                                 }
-                                    
-                             }
-                            else {
-                                <h4>Yout cart is Empty</h4>
-                            }
-                           
-                        </tbody>
-                    </table>
+                                else
+                                {
+                                    <h4>Yout cart is Empty</h4>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="shoping__cart__btns">
-                    <a href="~/Home/Index" class="primary-btn cart-btn">CONTINUE SHOPPING </a>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="shoping__cart__btns">
+                        <a href="~/Home/Index" class="primary-btn cart-btn">CONTINUE SHOPPING </a>
 
 
                         <button class="update-cart-btn">
                             <a class="primary-btn cart-btn cart-btn-right">
-                            
+
                                 <span class="icon_loading"></span>
                                 Upadate Cart
-                            
+
                             </a>
                         </button>
 
@@ -142,34 +143,293 @@
 
                         </style>
 
+                    </div>
+
                 </div>
-                
-            </div>
-            <div class="col-lg-6">
-                <div class="shoping__continue">
-                    <div class="shoping__discount">
-                        <h5>Discount Codes</h5>
-                        <form action="#">
-                            <input type="text" placeholder="Enter your coupon code">
-                            <button type="submit" class="site-btn">APPLY COUPON</button>
-                        </form>
+                <div class="col-lg-6">
+                    <div class="shoping__continue">
+                        <div class="shoping__discount">
+                            <h5>Discount Codes</h5>
+                            <form action="#">
+                                <input type="text" placeholder="Enter your coupon code">
+                                <button type="submit" class="site-btn">APPLY COUPON</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="shoping__checkout">
+                        <h5>Cart Total</h5>
+                        <ul>
+                            <li>Subtotal <span>@Model.GrandTotal</span></li>
+                            <li>Total <span>@Model.GrandTotal</span></li>
+                        </ul>
+                        <div class="form-input">
+                            <div class="form-group">
+                                <label for="address">Địa chỉ giao hàng:</label>
+                                <input type="text" id="address" name="address" placeholder="Nhập địa chỉ giao hàng" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Số điện thoại:</label>
+                                <input type="text" id="phone" name="phone" placeholder="Nhập số điện thoại" required>
+                            </div>
+                        </div>
+                        <div class="options">
+                            <select id="payment-method">
+                                <option value="qr">
+                                    Thanh toán qua QR Code
+                                </option>
+                                <option value="cash">
+                                    Thanh toán khi nhận hàng (COD)
+                                </option>
+                            </select>
+                        </div>
+                        <span style="color: red">@TempData["OderMesseger"]</span>
+                        <div class="primary-btn" onclick="showConfirmation()">
+                            PROCEED TO CHECKOUT
+                        </div>
+                        <div class="confirmation-box" id="confirmBox">
+                            <p>Bạn có chắc chắn muốn thực hiện hành động này không?</p>
+                            <div class="confirmation-actions">
+                                <div class="btn btn-confirm" onclick="checkPaymentMethod()">Xác nhận</div>
+                                <div class="btn btn-cancel" onclick="handleCancel()">Hủy</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6">
-                <div class="shoping__checkout">
-                    <h5>Cart Total</h5>
-                    <ul>
-                        <li>Subtotal <span>@Model.GrandTotal</span></li>
-                        <li>Total <span>@Model.GrandTotal</span></li>
-                        </ul>
-                        <span style="color: red">@TempData["OderMesseger"]</span>
-                        <a href="~/Cart/CheckOut/@Model.GrandTotal" class="primary-btn">PROCEED TO CHECKOUT</a>       
-                </div>
-            </div>
+
         </div>
-        
-    </div>
     </form>
 </section>
+
+<div id="qr-container" style="display: none;">
+    <div style="text-align: center; background: white; padding: 20px; border-radius: 10px;">
+        <img id="qr-code-img" src="" alt="QR Code">
+        <div style="margin-top: 15px;">
+            <button onclick="confirmPayment()" class="btn btn-confirm">Xác nhận</button>
+            <button onclick="hideQR()" class="btn btn-cancel">Hủy</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script>
+    function generateRandomCode(length = 5) {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result = '';
+        for (let i = 0; i < length; i++) {
+            result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return result;
+    }
+
+
+    var codeOrder;
+
+    function showConfirmation() {
+        document.getElementById('confirmBox').style.display = 'block'; // Hiện hộp xác nhận
+    }
+
+    function handleCancel() {
+        document.getElementById('confirmBox').style.display = 'none'; // Ẩn hộp xác nhận
+    }
+
+    function checkPaymentMethod() {
+        document.getElementById('confirmBox').style.display = 'none'; // Ẩn hộp xác nhận sau khi bấm "Xác nhận"
+        const selectedValue = document.getElementById('payment-method').value;
+
+        const address = document.getElementById("address").value;
+        const phone = document.getElementById("phone").value;
+
+
+        codeOrder = generateRandomCode(5); // Tạo mã ngẫu nhiên
+
+        if (selectedValue === 'qr') {
+            var jsonreq = {
+                bin: "970415",
+                accountNo: "103873276371",
+                accountName: "Tran An Thuyen",
+                amount: @Html.Raw(Json.Serialize(Model.GrandTotal)),
+                content: codeOrder
+            };
+
+            fetch("https://open.oapi.vn/banking/generate-qr", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(jsonreq)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === "success") {
+                        // Hiển thị QR trong popup
+                        document.getElementById("qr-container").style.display = "flex"; // Mở popup QR
+                        document.getElementById("qr-code-img").src = data.data; // Đặt ảnh QR
+                    } else {
+                        document.getElementById("qr-container").innerHTML =
+                            `<p>Không thể tạo mã QR. Vui lòng thử lại.</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
+        } else if (selectedValue === 'cash') {
+            // Redirect to the cash on delivery page
+            window.location.href = `Cart/CheckOut/${codeOrder}/${@Model.GrandTotal}?address=${encodeURIComponent(address)}&phone=${encodeURIComponent(phone)}`;
+
+        }
+    }
+
+    function hideQR() {
+        document.getElementById("qr-container").style.display = "none"; // Ẩn QR container
+    }
+
+    function confirmPayment() {
+        // Xử lý thanh toán (có thể gọi API hoặc làm điều gì đó sau khi xác nhận thanh toán)
+        hideQR(); // Ẩn QR container sau khi xác nhận
+        const address = document.getElementById("address").value;
+        const phone = document.getElementById("phone").value;
+        window.location.href = `/Cart/CheckOut/${codeOrder}/${@Model.GrandTotal}/${haspay = true}?address=${encodeURIComponent(address)}&phone=${encodeURIComponent(phone)}`;
+
+    }
+
+
+</script>
+
+<style>
+    .card {
+        padding: 20px;
+        background-color: #f0f0f0;
+        width: 200px;
+        text-align: center;
+        cursor: pointer;
+        border-radius: 8px;
+        margin: 20px;
+    }
+
+    .confirmation-actions {
+        display: flex;
+        justify-content: flex-start;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .confirmation-box {
+        display: none;
+        padding: 15px;
+        margin-top: 10px;
+        background-color: #fffbe6;
+        border: 1px solid #ffc107;
+        border-radius: 5px;
+        width: 495px;
+    }
+
+    .btn {
+        padding: 5px 10px;
+        margin: 5px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-confirm {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .btn-cancel {
+        background-color: #f44336;
+        color: white;
+    }
+
+    .options {
+        margin-bottom: 100px;
+    }
+
+
+    #qr-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        display: none; /* Đảm bảo ẩn QR container ban đầu */
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.6);
+        z-index: 9999;
+    }
+
+        #qr-container div {
+            max-width: 600px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        #qr-container img {
+            max-width: 400px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+    .btn {
+        padding: 10px 20px;
+        margin: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .btn-confirm {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .btn-cancel {
+        background-color: #f44336;
+        color: white;
+    }
+
+    .form-input {
+        max-width: 500px;
+        margin: 20px auto;
+        font-family: Arial, sans-serif;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+            .form-group input:focus {
+                border-color: #007bff;
+                box-shadow: 0 0 4px rgba(0, 123, 255, 0.25);
+                outline: none;
+            }
+
+</style>
+
+
 <!-- Shoping Cart Section End -->
