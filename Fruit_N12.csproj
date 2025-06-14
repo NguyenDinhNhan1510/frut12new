@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Areas\Admin\Views\AdminAccount\CreateAdminAccount.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="elFinder.NetCore" Version="1.4.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.0" />
@@ -43,8 +47,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Areas\Admin\Views\AdminAccount\CreateAdminAccount.cshtml" />
     <None Include="wwwroot\admin\lib\elFinder\files\.trash\.gitkeep" />
     <None Include="wwwroot\admin\lib\elFinder\php\.tmp\.htaccess" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Areas\Admin\Views\AdminAccount\CreateAdminAccount.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Areas\Admin\Views\AdminAccount\CreateAdminAccount.cshtml" />
   </ItemGroup>
 
 </Project>

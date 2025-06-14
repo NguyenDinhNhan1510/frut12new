@@ -1,8 +1,9 @@
-﻿    @using Fruit_N12.Utilities;
-    @model Fruit_N12.Areas.Admin.Models.AdminUser;
+﻿@using Fruit_N12.Utilities;
+@model Fruit_N12.Areas.Admin.Models.AdminUser
 @{
-    Layout = "";
+    Layout = ""; ;
 }
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,7 +11,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Pages / Login - NiceAdmin Bootstrap Template</title>
+    <title>Pages / Register - NiceAdmin Bootstrap Template</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -41,22 +42,21 @@
     * Author: BootstrapMade.com
     * License: https://bootstrapmade.com/license/
     ======================================================== -->
-
 </head>
 
 <body>
 
     <main>
         <div class="container">
-
+            <h2><a href="~/admin/home/index">Back</a></h2>
             <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
                 <div class="container">
                     <div class="row justify-content-center">
                         <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
 
                             <div class="d-flex justify-content-center py-4">
-                                <a href="" class="logo d-flex align-items-center w-auto">
-                                    
+                                <a href="index.html" class="logo d-flex align-items-center w-auto">
+                                    <img src="~/assets1/img/logo.jpg" alt="">
                                     <span class="d-none d-lg-block">
                                         <img src="~/assets1/img/apple-touch-icon.png" style="width: 200px; height: 200px;" alt="">
                                         Cybersecurity Admin
@@ -69,56 +69,64 @@
                                 <div class="card-body">
 
                                     <div class="pt-4 pb-2">
-                                        <h5 class="card-title text-center pb-0 fs-4">Đăng nhập tài khoản</h5>
-                                        <p class="text-center small">Nhập UserName và Password để đăng nhập</p>
+                                        <h5 class="card-title text-center pb-0 fs-4">Đăng ký tài khoản </h5>
+                                        <p class="text-center small">Vui lòng nhập thông tin để đăng ký tài khoản! </p>
                                     </div>
 
-                                    <form class="row g-3 needs-validation" asp-controller="Login" asp-action="Index" novalidate>
+                                    <form class="row g-3 needs-validation" novalidate asp-controller="Register" asp-action="Index">
+                                        <div class="col-12">
+                                            <label for="yourName" class="form-label">Your Name</label>
+                                            <input type="text" asp-for="UserName" class="form-control" id="yourName" required>
+                                            <div class="invalid-feedback">Please, enter your name!</div>
+                                        </div>
 
                                         <div class="col-12">
-                                            <label for="yourUsername" class="form-label">UserName</label>
-                                            <div class="input-group has-validation">
-
-                                                <input type="text" asp-for="UserName" class="form-control" id="yourUsername" required>
-                                                <div class="invalid-feedback">Please enter your Email.</div>
-                                            </div>
+                                            <label for="yourEmail" class="form-label">Your Email</label>
+                                            <input type="email" asp-for="Email" class="form-control" id="yourEmail" required>
+                                            <div class="invalid-feedback">Please enter a valid Email adddress!</div>
                                         </div>
 
                                         <div class="col-12">
                                             <label for="yourPassword" class="form-label">Password</label>
                                             <input type="password" asp-for="Password" class="form-control" id="yourPassword" required>
-                                            <div class="invalid-feedback">Please enter your password!</div>
+                                            <div class="invalid-feedback">Mật khẩu phải đúng 8 ký tự!</div>
+                                            @* <div class="invalid-feedback">Please enter your password!</div> *@
                                         </div>
 
-                                        <div class="col-12">
+
+
+                                        <div class="form-group d-none">
+                                            <input asp-for="IsActive" class="form-control" value="True" />
+
+                                        </div>
+                                        <div class="col-12 text-center text-danger">
                                             <h6 style="color:red">
-                                                @Function._Message
+                                                @Function._MessageEmail
                                             </h6>
                                         </div>
 
                                         <div class="col-12">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="remember" value="true" id="rememberMe">
-                                                <label class="form-check-label" for="rememberMe">Lưu mật khẩu</label>
-
-                                            </div>
+                                            <button class="btn btn-primary w-100" type="submit">Đăng ký tài khoản </button>
                                         </div>
-
-                                        <div class="col-12">
-                                            <button class="btn btn-primary w-100" type="submit">Login</button>
-                                        </div>
-                                        <div class="col-12">
-                                          
-                                        </div>
+                                     @*   <div class="col-12">
+                                            <p class="small mb-0">Bạn đã có tài khoản! <a href="@Url.Action("Index", "Login")">Đăng nhập</a></p>
+                                        </div>*@
                                     </form>
-                                    @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage as string))
+                                    @if (ViewBag.ErrorMessage != null)
                                     {
-                                        <p style="color:red;">@ViewBag.ErrorMessage</p>
+                                        <div class="alert alert-danger text-center">
+                                            <p style="color: red">@ViewBag.ErrorMessage</p>
+                                        </div>
                                     }
                                 </div>
                             </div>
 
-
+                            <div class="credits">
+                                <!-- All the links in the footer should remain intact. -->
+                                <!-- You can delete the links only if you purchased the pro version. -->
+                                <!-- Licensing information: https://bootstrapmade.com/license/ -->
+                                <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
+                            </div>
 
                         </div>
                     </div>
@@ -127,7 +135,7 @@
             </section>
 
         </div>
-    </main><!-- End #main -->
+    </main><!-- End #main --><!-- End #main -->
 
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
@@ -147,3 +155,4 @@
 </body>
 
 </html>
+

@@ -12,7 +12,8 @@ namespace Fruit_N12.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        
+        public IActionResult Details()
         {
             return View();
         }
